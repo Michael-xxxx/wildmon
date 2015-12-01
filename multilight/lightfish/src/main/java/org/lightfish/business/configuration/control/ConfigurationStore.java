@@ -41,6 +41,7 @@ public class ConfigurationStore {
         configuration.put("dataCollectionRetries", "1");
         configuration.put("defaultMaxLogResults", "40");
         configuration.put("collectLogs", "true");
+        configuration.put("application", "");
         em.persist(configuration);
         return configuration;
     }

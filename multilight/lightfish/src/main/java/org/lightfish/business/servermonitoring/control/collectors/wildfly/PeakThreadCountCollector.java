@@ -9,14 +9,14 @@ import org.lightfish.business.servermonitoring.control.collectors.SnapshotDataCo
  * @author Rob Veldpaus
  */
 @SnapshotDataCollectorWildfly
-public class ExpiredSessionCollector extends AbstractRestDataCollector<Integer> {
+public class PeakThreadCountCollector extends AbstractRestDataCollector<Integer> {
 
-    public static final String CREATED_SESSIONS_URI = "deployment/Einkaufsliste.war/subsystem/undertow?operation=attribute&name=sessions-created";
+    public static final String PEAK_THREAD_COUNT_URI = "core-service/platform-mbean/type/threading?operation=attribute&name=peak-thread-count";
 
     @Override
     public DataPoint<Integer> collect() throws Exception {
-        String str = sendRequest(CREATED_SESSIONS_URI);
-        return new DataPoint<>("expiredSessionCount", Integer.parseInt(str));
+        String str = sendRequest(PEAK_THREAD_COUNT_URI);
+        return new DataPoint<>("peakThreadCount", Integer.parseInt(str));
     }
 
 }

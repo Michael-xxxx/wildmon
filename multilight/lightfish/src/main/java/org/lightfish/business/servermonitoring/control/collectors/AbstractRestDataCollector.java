@@ -12,13 +12,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import org.lightfish.business.rest.HttpRestClient;
 import org.lightfish.business.servermonitoring.control.SessionTokenRetriever;
 
 /**
@@ -30,7 +24,7 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
     @Inject
     protected Client client;
     @Inject
-    protected Instance<String> location;
+    String location;
     @Inject
     protected Instance<String> sessionToken;
     @Inject
@@ -40,6 +34,8 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
     String password;
     @Inject
     String username;
+    @Inject
+    HttpRestClient httpRestClient;
 
     @Inject
     Logger LOG;
@@ -110,7 +106,7 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
 
     protected String getBaseURI() {
         //return getProtocol() + location.get() + "/monitoring/domain/" + serverInstance + "/";
-        return getProtocol() + location.get() + "/management/";//Wildfly
+        return getProtocol() + location + "/management/";//Wildfly
     }
 
     protected String getProtocol() {
@@ -123,7 +119,7 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
     }
 
     protected String getLocation() {
-        return location.get();
+        return location;
     }
 
     protected Response getResponse(String uri) {
@@ -132,7 +128,7 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
 
     protected Response getResponse(String uri, int retries) {
         String fullUri = getBaseURI() + uri;
-        System.out.println("fullUri: " + fullUri);
+        LOG.info("fullUri: " + fullUri);
         WebTarget resource = client.target(fullUri);
         Invocation.Builder builder = resource.request(MediaType.APPLICATION_JSON);
         if (sessionToken != null && sessionToken.get() != null && !sessionToken.get().isEmpty()) {
@@ -141,30 +137,8 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
         return builder.get(Response.class);
     }
 
+    //Only Wildfly
     protected String sendRequest(String uri) throws IOException {
-
-        String content = "";
-
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-
-        httpclient.getCredentialsProvider().setCredentials(
-                new AuthScope("localhost", 9990),
-                new UsernamePasswordCredentials(username, password));
-
-        HttpGet httpget = new HttpGet(getBaseURI() + uri);
-
-        System.out.println("executing request" + httpget.getRequestLine());
-        HttpResponse response = httpclient.execute(httpget);
-        HttpEntity entity = response.getEntity();
-
-        if (entity != null) {
-            content = EntityUtils.toString(entity);
-            System.out.println("Response content: " + content);
-        }
-        if (entity != null) {
-            entity.consumeContent();
-        }
-        httpclient.getConnectionManager().shutdown();
-        return content;
+        return httpRestClient.sendRequest(uri);
     }
 }

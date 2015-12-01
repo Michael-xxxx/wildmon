@@ -12,17 +12,16 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-*/
+ */
 package org.lightfish.presentation.administration;
-
-import org.lightfish.business.configuration.boundary.Configurator;
-import org.lightfish.business.servermonitoring.boundary.MonitoringAdmin;
-import org.lightfish.business.servermonitoring.boundary.MonitoringController;
 
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+import org.lightfish.business.configuration.boundary.Configurator;
+import org.lightfish.business.servermonitoring.boundary.MonitoringAdmin;
+import org.lightfish.business.servermonitoring.boundary.MonitoringController;
 import org.lightfish.business.servermonitoring.boundary.ServerInformation;
 import org.lightfish.business.servermonitoring.entity.OneShot;
 
@@ -32,10 +31,11 @@ import org.lightfish.business.servermonitoring.entity.OneShot;
  */
 @Model
 public class Index {
+
     public static final String INTERVAL = "interval";
     public static final String LOCATION = "location";
-    
-    
+    public static final String APPLICATION = "application";
+
     @Inject
     Configurator configurator;
 
@@ -44,74 +44,82 @@ public class Index {
 
     @Inject
     MonitoringAdmin monitoringAdmin;
-    
+
     @Inject
     ServerInformation information;
-    
+
+    public String getApplication() {
+        return configurator.getValue(APPLICATION);
+    }
+
+    public void setApplication(String name) {
+        this.configurator.setValue(APPLICATION, name);
+    }
+
     @Min(1)
     public int getInterval() {
         return configurator.getValueAsInt(INTERVAL);
     }
-    
+
     public void setInterval(int interval) {
-        this.configurator.setValue(INTERVAL,interval);
+        this.configurator.setValue(INTERVAL, interval);
     }
 
-    public Object activateMonitoring(){
+    public Object activateMonitoring() {
         this.monitoringAdmin.activateMonitoring();
         return null;
     }
 
-    public Object deactivateMonitoring(){
+    public Object deactivateMonitoring() {
         this.monitoringAdmin.deactivateMonitoring();
         return null;
     }
 
-    @Size(min=5,max=30)
+    @Size(min = 5, max = 30)
     public String getLocation() {
         return this.configurator.getValue(LOCATION);
     }
-    
-    public String getVersion(){
+
+    public String getVersion() {
         OneShot info = this.information.fetch();
-        if(info != null){
+        if (info != null) {
             return info.getVersion();
-        }else{
+        } else {
             return "--";
         }
-        
+
     }
 
-    public String getUptime(){
+    public String getUptime() {
         OneShot info = this.information.fetch();
-        if(info != null){
+        if (info != null) {
             return info.getUptime();
-        }else{
+        } else {
             return "--";
         }
     }
-    
+
     public void setLocation(String location) {
-        this.configurator.setValue(LOCATION,location);
-    
+        this.configurator.setValue(LOCATION, location);
+
     }
 
-    public boolean isRunning(){
+    public boolean isRunning() {
         return this.controller.isRunning();
     }
-    
-    public Object changeAdministration(){
+
+    public Object changeAdministration() {
         return null;
     }
-    
-    public Object start() throws Exception{
+
+    public Object start() throws Exception {
         this.controller.startTimer();
         return null;
     }
-    
-    public Object stop(){
+
+    public Object stop() {
         this.controller.stopTimer();
         return null;
     }
-    
+
 }

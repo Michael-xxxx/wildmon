@@ -39,6 +39,14 @@
                 </div>         
 
                 <div class="control-group">
+                    <label class="control-label">Application:</label>
+                    <div class="controls">
+                        <label class="text-label"><h:inputText value="#{index.application}"/>
+                        <span class="help-block">required for monitoring sessions, see Tabsheet Applications</span></label>                              
+                    </div>
+                </div>      
+                
+                <div class="control-group">
                     <div class="controls">
                         <h:commandButton value="Update" action="#{index.changeAdministration}" class="btn btn-primary"/> 
                     </div>
@@ -74,8 +82,8 @@
         <div class="row">
             <h:form class="form-horizontal">
                 <legend>Actions</legend>
-
-                <div class="control-group">
+                <!--disabled-->
+                <div class="control-group" style="display:none">
                     <label class="control-label">Monitoring</label>
                     <div class="controls">
                         <div class="btn-toolbar form-btn-toolbar">

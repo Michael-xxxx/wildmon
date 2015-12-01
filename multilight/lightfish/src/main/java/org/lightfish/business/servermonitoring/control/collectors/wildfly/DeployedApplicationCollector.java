@@ -27,9 +27,11 @@ public class DeployedApplicationCollector extends AbstractRestDataCollector<List
         JsonObject object = jsonReader.readObject();
         JsonObject apps = object.getJsonObject("deployment");
         List<Application> applications = new ArrayList<>();
-        for (String name : apps.keySet()) {
-            Application a = new Application(name, new ArrayList<String>());
-            applications.add(a);
+        if (apps != null) {
+            for (String name : apps.keySet()) {
+                Application a = new Application(name, new ArrayList<String>());
+                applications.add(a);
+            }
         }
         return new DataPoint<>("applications", applications);
     }

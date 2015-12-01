@@ -1,13 +1,20 @@
 package org.lightfish.business.servermonitoring.control;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Date;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonReader;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import org.lightfish.business.authenticator.GlassfishAuthenticator;
+import org.lightfish.business.rest.HttpRestClient;
 import org.lightfish.business.servermonitoring.entity.OneShot;
 
 /**
@@ -18,27 +25,43 @@ public class OneShotProvider {
     @Inject
     protected Client client;
     @Inject
-    Instance<String> location;
+    String location;
     @Inject
-    Instance<String> username;
+    String username;
     @Inject
-    Instance<String> password;
+    String password;
     @Inject
     Instance<GlassfishAuthenticator> authenticator;
     private WebTarget managementResource;
+    @Inject
+    HttpRestClient httpRestClient;
 
     private Logger LOG = Logger.getLogger(OneShotProvider.class.getName());
 
     String getVersion() {
-        this.managementResource = this.client.target(getManagementURI());
-        JsonObject result = getJsonObject("version");
-        return result.getString("message");
+        try {
+            String str = httpRestClient.sendRequest("");
+            JsonReader jsonReader = Json.createReader(new StringReader(str));
+            JsonObject object = jsonReader.readObject();
+            return object.getString("release-version");
+        } catch (IOException ex) {
+            Logger.getLogger(OneShotProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "-";
     }
 
     String getUpTime() {
-        this.managementResource = this.client.target(getManagementURI());
-        JsonObject result = getJsonObject("uptime");
-        return result.getString("message");
+        String uri = "core-service/platform-mbean/type/runtime?recursive=true&include-runtime=true";
+        try {
+            String str = httpRestClient.sendRequest(uri);
+            JsonReader jsonReader = Json.createReader(new StringReader(str));
+            JsonObject object = jsonReader.readObject();
+            int uptime = object.getInt("start-time");
+            return new Date(uptime).toString();
+        } catch (IOException ex) {
+            Logger.getLogger(OneShotProvider.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return "-";
     }
 
     JsonObject getJsonObject(String name) {
@@ -46,7 +69,7 @@ public class OneShotProvider {
     }
 
     String getManagementURI() {
-        return getProtocol() + location.get() + "/management/domain/";
+        return getProtocol() + location + "/management/";
     }
 
     public OneShot fetchOneShot() {
@@ -65,7 +88,7 @@ public class OneShotProvider {
 
     private String getProtocol() {
         String protocol = "http://";
-        if (username != null && username.get() != null && !username.get().isEmpty()) {
+        if (username != null && username != null && !username.equals("")) {
             protocol = "http://";
             LOG.info("User name is not empty, returning https");
         } else {
@@ -73,4 +96,5 @@ public class OneShotProvider {
         }
         return protocol;
     }
+
 }
