@@ -51,9 +51,12 @@ public class HttpRestClient {
             entity.consumeContent();
         }
         int statuscode = response.getStatusLine().getStatusCode();
-        if (statuscode != 200) {
+        if (statuscode == 401) {
             content = "{\"" + response.getStatusLine().getReasonPhrase()
                     + "\":\"Authentication configuration missing or wrong!\"}";
+        } else if (statuscode != 200) {
+            content = "{\"" + response.getStatusLine().getReasonPhrase()
+                    + "\":\"\"}";
         }
         httpclient.getConnectionManager().shutdown();
         return content;

@@ -43,7 +43,7 @@ public class OneShotProvider {
             String str = httpRestClient.sendRequest("");
             JsonReader jsonReader = Json.createReader(new StringReader(str));
             JsonObject object = jsonReader.readObject();
-            return object.getString("release-version");
+            return object.getString("release-version") + " " + object.getString("release-codename");
         } catch (IOException ex) {
             Logger.getLogger(OneShotProvider.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -41,7 +41,7 @@ public class ConfigurationStore {
         configuration.put("dataCollectionRetries", "1");
         configuration.put("defaultMaxLogResults", "40");
         configuration.put("collectLogs", "true");
-        configuration.put("application", "");
+        configuration.put("application", "lightfish4wildfly.war");
         em.persist(configuration);
         return configuration;
     }
