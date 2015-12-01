@@ -1,17 +1,28 @@
 package org.lightfish.business.servermonitoring.control.collectors.wildfly;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.lightfish.business.servermonitoring.control.collectors.AbstractRestDataCollector;
 import org.lightfish.business.servermonitoring.control.collectors.DataPoint;
 import org.lightfish.business.servermonitoring.control.collectors.SnapshotDataCollectorWildfly;
 
 /**
  *
- * @author Rob Veldpaus
+ * @author michael
  */
 @SnapshotDataCollectorWildfly
 public class CurrentSessionCollector extends AbstractRestDataCollector<Integer> {
 
-    public static final String SESSION_COUNT_URI = "deployment/Einkaufsliste.war/subsystem/undertow?operation=attribute&name=active-sessions";
+    @Inject
+    String application;
+
+    private String SESSION_COUNT_URI;
+
+    @PostConstruct
+    public void init() {
+        SESSION_COUNT_URI = "deployment/" + application + "/subsystem/undertow?operation=attribute&name=sessions-created";
+
+    }
 
     @Override
     public DataPoint<Integer> collect() throws Exception {

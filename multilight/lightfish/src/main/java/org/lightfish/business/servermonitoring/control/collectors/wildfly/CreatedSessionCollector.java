@@ -8,7 +8,7 @@ import org.lightfish.business.servermonitoring.control.collectors.SnapshotDataCo
 
 /**
  *
- * @author Rob Veldpaus
+ * @author michael
  */
 @SnapshotDataCollectorWildfly
 public class CreatedSessionCollector extends AbstractRestDataCollector<Integer> {
@@ -16,7 +16,7 @@ public class CreatedSessionCollector extends AbstractRestDataCollector<Integer> 
     @Inject
     String application;
 
-    public String CREATED_SESSIONS_URI;
+    private String CREATED_SESSIONS_URI;
 
     @PostConstruct
     public void init() {

@@ -6,7 +6,7 @@ import org.lightfish.business.servermonitoring.control.collectors.SnapshotDataCo
 
 /**
  *
- * @author Rob Veldpaus
+ * @author michael
  */
 @SnapshotDataCollectorWildfly
 public class PeakThreadCountCollector extends AbstractRestDataCollector<Integer> {

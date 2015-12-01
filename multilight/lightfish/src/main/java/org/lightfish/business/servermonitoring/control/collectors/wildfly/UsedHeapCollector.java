@@ -10,7 +10,7 @@ import org.lightfish.business.servermonitoring.control.collectors.SnapshotDataCo
 
 /**
  *
- * @author Rob Veldpaus
+ * @author michael
  */
 @SnapshotDataCollectorWildfly
 public class UsedHeapCollector extends AbstractRestDataCollector<Long> {
