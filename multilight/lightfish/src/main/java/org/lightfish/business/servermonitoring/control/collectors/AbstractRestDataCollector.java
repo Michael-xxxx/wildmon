@@ -1,5 +1,6 @@
 package org.lightfish.business.servermonitoring.control.collectors;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.logging.Logger;
 import javax.enterprise.inject.Instance;
@@ -11,6 +12,13 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.lightfish.business.servermonitoring.control.SessionTokenRetriever;
 
 /**
@@ -28,8 +36,13 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
     @Inject
     protected SessionTokenRetriever tokenProvider;
     private String serverInstance;
+    @Inject
+    String password;
+    @Inject
+    String username;
 
-    @Inject Logger LOG;
+    @Inject
+    Logger LOG;
 
     @Override
     public String getServerInstance() {
@@ -96,7 +109,8 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
     }
 
     protected String getBaseURI() {
-        return getProtocol() + location.get() + "/monitoring/domain/" + serverInstance + "/";
+        //return getProtocol() + location.get() + "/monitoring/domain/" + serverInstance + "/";
+        return getProtocol() + location.get() + "/management/";//Wildfly
     }
 
     protected String getProtocol() {
@@ -118,11 +132,39 @@ public abstract class AbstractRestDataCollector<TYPE> implements DataCollector<T
 
     protected Response getResponse(String uri, int retries) {
         String fullUri = getBaseURI() + uri;
+        System.out.println("fullUri: " + fullUri);
         WebTarget resource = client.target(fullUri);
         Invocation.Builder builder = resource.request(MediaType.APPLICATION_JSON);
         if (sessionToken != null && sessionToken.get() != null && !sessionToken.get().isEmpty()) {
             builder.cookie(new Cookie("gfresttoken", sessionToken.get()));
         }
         return builder.get(Response.class);
+    }
+
+    protected String sendRequest(String uri) throws IOException {
+
+        String content = "";
+
+        DefaultHttpClient httpclient = new DefaultHttpClient();
+
+        httpclient.getCredentialsProvider().setCredentials(
+                new AuthScope("localhost", 9990),
+                new UsernamePasswordCredentials(username, password));
+
+        HttpGet httpget = new HttpGet(getBaseURI() + uri);
+
+        System.out.println("executing request" + httpget.getRequestLine());
+        HttpResponse response = httpclient.execute(httpget);
+        HttpEntity entity = response.getEntity();
+
+        if (entity != null) {
+            content = EntityUtils.toString(entity);
+            System.out.println("Response content: " + content);
+        }
+        if (entity != null) {
+            entity.consumeContent();
+        }
+        httpclient.getConnectionManager().shutdown();
+        return content;
     }
 }

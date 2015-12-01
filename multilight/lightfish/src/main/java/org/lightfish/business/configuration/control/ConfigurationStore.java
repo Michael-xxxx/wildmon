@@ -1,9 +1,9 @@
 package org.lightfish.business.configuration.control;
 
 import javax.ejb.Stateless;
-import org.lightfish.business.configuration.entity.Configuration;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import org.lightfish.business.configuration.entity.Configuration;
 
 /**
  *
@@ -30,7 +30,7 @@ public class ConfigurationStore {
 
     private Configuration createDefault() {
         Configuration configuration = new Configuration();
-        configuration.put("location", "localhost:4848");
+        configuration.put("location", "localhost:9990");
         configuration.put("jdbcPoolNames", "SamplePool");
         configuration.put("interval", "2");
         configuration.put("username", "");

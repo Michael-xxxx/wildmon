@@ -105,6 +105,7 @@ public class MonitoringController {
     private Timer timer;
     @Inject
     private Instance<Integer> interval;
+    private SnapshotCollector collector;
 
     public void startTimer() {
         //sessionTokenProvider.retrieveSessionToken();
@@ -214,6 +215,7 @@ public class MonitoringController {
 
         currentSnapshots.clear();
         currentCollectionActions.clear();
+        snapshotCollectorInstance.destroy(collector);
     }
 
     private void startNextInstanceCollection(int index) {
@@ -226,7 +228,7 @@ public class MonitoringController {
             return;
         }
 
-        SnapshotCollector collector = snapshotCollectorInstance.get();
+        collector = snapshotCollectorInstance.get();
         collector.setServerInstance(currentServerInstance);
 
         LOG.log(Level.INFO, "Starting data collection for {0}", currentServerInstance);

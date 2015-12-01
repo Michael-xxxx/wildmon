@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.lightfish.business.servermonitoring.control.collectors.DataCollector;
@@ -27,7 +28,7 @@ import org.lightfish.business.servermonitoring.control.collectors.DataPoint;
 import org.lightfish.business.servermonitoring.control.collectors.DataPointToSnapshotMapper;
 import org.lightfish.business.servermonitoring.control.collectors.ParallelDataCollectionActionBehaviour;
 import org.lightfish.business.servermonitoring.control.collectors.ParallelDataCollectionExecutor;
-import org.lightfish.business.servermonitoring.control.collectors.SnapshotDataCollector;
+import org.lightfish.business.servermonitoring.control.collectors.SnapshotDataCollectorWildfly;
 import org.lightfish.business.servermonitoring.entity.Snapshot;
 
 /**
@@ -35,11 +36,12 @@ import org.lightfish.business.servermonitoring.entity.Snapshot;
  */
 public class SnapshotProvider {
 
-    @Inject Logger LOG;
+    @Inject
+    Logger LOG;
     @Inject
     Instance<Boolean> parallelDataCollection;
     @Inject
-    @SnapshotDataCollector
+    @SnapshotDataCollectorWildfly
     Instance<DataCollector<?>> dataCollectors;
     @Inject
     DataPointToSnapshotMapper mapper;
@@ -56,6 +58,15 @@ public class SnapshotProvider {
         for (DataCollector collector : dataCollectors) {
             LOG.info("Loaded DataCollector: " + collector);
         }
+    }
+
+    @PreDestroy
+    public void des() {
+        for (DataCollector collector : dataCollectors) {
+            dataCollectors.destroy(collector);
+
+        }
+
     }
 
     public Snapshot fetchSnapshot(String instanceName) throws Exception {
@@ -109,7 +120,6 @@ public class SnapshotProvider {
         for (DataCollector collector : dataCollectors) {
             collector.setServerInstance(instanceName);
             dataCollectorList.add(collector);
-
         }
         return dataCollectorList;
     }

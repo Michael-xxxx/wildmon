@@ -17,6 +17,7 @@ package org.lightfish.business.servermonitoring.entity;
 
 import java.util.Collections;
 import java.util.List;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -38,6 +39,7 @@ public class Application {
     private long id;
     
     private String applicationName;
+    @ElementCollection
     private List<String> components;
 
     public Application(String applicationName,List<String> components) {

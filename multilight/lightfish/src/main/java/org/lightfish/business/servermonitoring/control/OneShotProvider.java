@@ -66,7 +66,7 @@ public class OneShotProvider {
     private String getProtocol() {
         String protocol = "http://";
         if (username != null && username.get() != null && !username.get().isEmpty()) {
-            protocol = "https://";
+            protocol = "http://";
             LOG.info("User name is not empty, returning https");
         } else {
             LOG.info("Using " + protocol);
