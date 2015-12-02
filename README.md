@@ -3,7 +3,7 @@ WildMon (based on lightfish) is Licensed under the Apache License, Version 2.0
 
 #Installation:
 
-0. Setup JAVA_HOME to point to JDK 1.7 installation (wildmon uses JDK 1.7 features)
+0. Setup JAVA_HOME to point to JDK 1.8 installation
 1. `git clone https://github.com/Michael-xxxx/wildmon.git`
 2. Perform `mvn clean install`in lightfish folder
 
