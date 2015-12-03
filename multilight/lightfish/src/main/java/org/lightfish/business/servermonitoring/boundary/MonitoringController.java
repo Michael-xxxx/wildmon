@@ -70,7 +70,7 @@ import org.lightfish.business.servermonitoring.entity.Snapshot;
  * @author Adam Bien, blog.adam-bien.com
  */
 @Singleton
-@Path("snapshots")
+@Path("snapshots")// Pfad resources/snapshots siehe RESTConfig.java
 @Produces(MediaType.APPLICATION_JSON)
 @ConcurrencyManagement(ConcurrencyManagementType.BEAN)
 public class MonitoringController {
