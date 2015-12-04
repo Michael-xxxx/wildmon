@@ -12,6 +12,9 @@ Drop the lightfish/target/lightfish4wildfly.war into /wildfly-x.x.x/standalone/d
 add a management user:  
 wildfly-x.x.x\bin\add-user.bat
 
+if you want to use "escalation scripts" SLSB pooling must be enabled via jboss.cli 
+/subsystem=ejb3/:write-attribute(name=default-slsb-instance-pool,value=slsb-strict-max-pool)
+
 Point your browser to: http://localhost:8080/lightfish4wildfly
 
 Go to Configuration --> Authentification set username/password of the management user  
