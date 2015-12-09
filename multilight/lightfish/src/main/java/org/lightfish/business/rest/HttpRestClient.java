@@ -6,6 +6,8 @@
 package org.lightfish.business.rest;
 
 import java.io.IOException;
+import java.util.logging.Logger;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -22,11 +24,12 @@ import org.apache.http.util.EntityUtils;
 public class HttpRestClient {
 
     @Inject
-    String location;
+    Instance<String> location;
     @Inject
-    String password;
+    Instance<String> password;
     @Inject
-    String username;
+    Instance<String> username;
+    private static final Logger LOG = Logger.getLogger(HttpRestClient.class.getName());
 
     public String sendRequest(String uri) throws IOException {
 
@@ -35,17 +38,17 @@ public class HttpRestClient {
         DefaultHttpClient httpclient = new DefaultHttpClient();
 
         httpclient.getCredentialsProvider().setCredentials(
-                new AuthScope(location.split(":")[0], Integer.parseInt(location.split(":")[1])),
-                new UsernamePasswordCredentials(username, password));
+                new AuthScope(location.get().split(":")[0], Integer.parseInt(location.get().split(":")[1])),
+                new UsernamePasswordCredentials(username.get(), password.get()));
 
-        HttpGet httpget = new HttpGet("http://" + location + "/management/" + uri);
+        HttpGet httpget = new HttpGet("http://" + location.get() + "/management/" + uri);
 
-        System.out.println("executing request:" + httpget.getRequestLine());
+        LOG.info("executing request:" + httpget.getRequestLine());
         HttpResponse response = httpclient.execute(httpget);
         HttpEntity entity = response.getEntity();
         if (entity != null) {
             content = EntityUtils.toString(entity);
-            System.out.println("Response content: " + content);
+            LOG.info("Response content: " + content);
         }
         if (entity != null) {
             entity.consumeContent();
