@@ -1,4 +1,4 @@
-package org.lightfish.business.servermonitoring.control.collectors.wildfly;
+package org.lightfish.business.servermonitoring.control.wildflycollectors;
 
 import java.io.StringReader;
 import javax.json.Json;

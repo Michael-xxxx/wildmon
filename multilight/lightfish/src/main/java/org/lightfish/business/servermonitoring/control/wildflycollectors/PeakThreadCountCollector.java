@@ -1,4 +1,4 @@
-package org.lightfish.business.servermonitoring.control.collectors.wildfly;
+package org.lightfish.business.servermonitoring.control.wildflycollectors;
 
 import org.lightfish.business.servermonitoring.control.collectors.AbstractRestDataCollector;
 import org.lightfish.business.servermonitoring.control.collectors.DataPoint;
