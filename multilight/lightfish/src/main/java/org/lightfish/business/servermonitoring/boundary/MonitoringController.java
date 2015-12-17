@@ -43,6 +43,7 @@ import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
 import javax.ejb.TimerService;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
@@ -111,7 +112,9 @@ public class MonitoringController {
         //sessionTokenProvider.retrieveSessionToken();
         ScheduleExpression expression = new ScheduleExpression();
         expression.minute("*").second("*/" + interval.get()).hour("*");
-        this.timer = this.timerService.createCalendarTimer(expression);
+        TimerConfig tc = new TimerConfig();
+        tc.setPersistent(false);
+        this.timer = this.timerService.createCalendarTimer(expression, tc);
     }
 
     public void restart() {
