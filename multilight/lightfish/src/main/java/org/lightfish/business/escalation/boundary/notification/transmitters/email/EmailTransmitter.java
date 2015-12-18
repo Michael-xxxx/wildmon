@@ -4,16 +4,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.inject.Inject;
+import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
@@ -22,6 +22,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.lightfish.business.escalation.boundary.notification.transmitter.Transmitter;
+import org.lightfish.business.escalation.boundary.notification.transmitter.TransmitterConfiguration;
 import org.lightfish.business.escalation.boundary.notification.transmitter.TransmitterType;
 import org.lightfish.business.escalation.entity.Escalation;
 
@@ -30,7 +31,7 @@ import org.lightfish.business.escalation.entity.Escalation;
  * @author rveldpau
  */
 @TransmitterType("email")
-public class EmailTransmitter implements Transmitter<EmailTransmitterConfiguration> {
+public class EmailTransmitter implements Transmitter {
 
     @Inject
     Logger LOG;
@@ -51,7 +52,9 @@ public class EmailTransmitter implements Transmitter<EmailTransmitterConfigurati
     }
 
     @Override
-    public void send(EmailTransmitterConfiguration configuration, Escalation escalation) {
+    public void send(TransmitterConfiguration config, Escalation escalation) {
+        EmailTransmitterConfiguration configuration
+                = (EmailTransmitterConfiguration) config;
         Properties props = createProperties(configuration);
 
         Authenticator authenticator = createAuthenticator(configuration);
@@ -83,7 +86,6 @@ public class EmailTransmitter implements Transmitter<EmailTransmitterConfigurati
         } catch (MessagingException ex) {
             LOG.log(Level.SEVERE, "Failed to send e-mail because " + ex.toString(), ex);
         }
-
 
     }
 
@@ -155,4 +157,5 @@ public class EmailTransmitter implements Transmitter<EmailTransmitterConfigurati
         }
         return emailTemplate;
     }
+
 }

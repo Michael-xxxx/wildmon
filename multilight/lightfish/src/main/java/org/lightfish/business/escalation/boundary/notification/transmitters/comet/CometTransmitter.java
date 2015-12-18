@@ -2,20 +2,23 @@ package org.lightfish.business.escalation.boundary.notification.transmitters.com
 
 import javax.inject.Inject;
 import org.lightfish.business.escalation.boundary.notification.transmitter.Transmitter;
+import org.lightfish.business.escalation.boundary.notification.transmitter.TransmitterConfiguration;
 import org.lightfish.business.escalation.boundary.notification.transmitter.TransmitterType;
 import org.lightfish.business.escalation.entity.Escalation;
 
 /**
- * The timer declaration needs to be separated from the injectable 
- * {@link Transmitter}, so this class simply represents what is required for the broker
- * and delegates all real action to {@link CometTransmitterDelegate}. 
+ * The timer declaration needs to be separated from the injectable
+ * {@link Transmitter}, so this class simply represents what is required for the
+ * broker and delegates all real action to {@link CometTransmitterDelegate}.
+ *
  * @author rveldpau
  */
 @TransmitterType("comet")
-public class CometTransmitter  implements Transmitter<CometTransmitterConfiguration>{
+public class CometTransmitter implements Transmitter {
 
-    @Inject CometTransmitterDelegate delegate;
-    
+    @Inject
+    CometTransmitterDelegate delegate;
+
     @Override
     public String getId() {
         return "comet";
@@ -25,17 +28,15 @@ public class CometTransmitter  implements Transmitter<CometTransmitterConfigurat
     public String getName() {
         return "COMET (AJAX)";
     }
-    
+
     @Override
     public boolean isSystem() {
         return true;
     }
 
     @Override
-    public void send(CometTransmitterConfiguration configuration, Escalation escalation) {
+    public void send(TransmitterConfiguration configuration, Escalation escalation) {
         delegate.addEscalation(escalation);
     }
 
-
-    
 }
