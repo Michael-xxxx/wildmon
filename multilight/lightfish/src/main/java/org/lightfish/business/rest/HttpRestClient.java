@@ -48,7 +48,7 @@ public class HttpRestClient {
         HttpEntity entity = response.getEntity();
         if (entity != null) {
             content = EntityUtils.toString(entity);
-            LOG.info("Response content: " + content);
+            LOG.fine("Response content: " + content);
         }
         if (entity != null) {
             entity.consumeContent();
