@@ -4,7 +4,7 @@
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
         <jta-data-source>java:/jboss/datasources/ExampleDS</jta-data-source>
         <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>         
+            <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>         
             <!--<property name="hibernate.hbm2ddl.auto=update" value="hibernate.hbm2ddl.auto=update"/>-->
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
             <property name="hibernate.show_sql" value="true"/>
